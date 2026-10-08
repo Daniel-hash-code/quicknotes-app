@@ -27,13 +27,35 @@ function render() {
         date.classList.add("note-date");
         date.textContent = note.createdAt;
 
+        const deleteButton = document.createElement("button");
+        deleteButton.textContent = "Delete";
+        deleteButton.classList.add("delete-button");
+
+        deleteButton.addEventListener("click", () => {
+            deleteNote(note.id);
+        });
+
         li.appendChild(text);
         li.appendChild(category);
         li.appendChild(date);
+        li.appendChild(deleteButton);
 
         notesList.appendChild(li);
         
     });
+
+    if (notes.length === 0) {
+        noteCount.textContent = "You have no notes yet.";
+    } else if (notes.length === 1) {
+        noteCount.textContent = "You have 1 note.";
+    } else {
+        noteCount.textContent = `You have ${notes.length} notes.`;
+    }
+}
+
+function deleteNote(id) {
+    notes = notes.filter((note) => note.id !== id);
+    render();
 }
 
 form.addEventListener("submit", (event) => {
@@ -41,6 +63,16 @@ form.addEventListener("submit", (event) => {
 
     const text = noteInput.value.trim();
     const category = noteCategory.value;
+
+    if (text === "") {
+        errorMessage.textContent = "Please type a note first.";
+        return;
+    }
+
+    if (text.length > 200) {
+        errorMessage.textContent = "Notes cannot be longer than 200 characters.";
+        return;
+    }
 
     const note = {
         id: Date.now(),
@@ -52,7 +84,7 @@ form.addEventListener("submit", (event) => {
     notes.push(note);
     render();
     noteInput.value = "";
-
+    errorMessage.textContent = "";
 });
 
 render();
