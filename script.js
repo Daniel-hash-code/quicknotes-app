@@ -8,10 +8,23 @@ const errorMessage = document.querySelector("#error-message");
 
 let notes = [];
 
-function render() {
+const NOTES_KEY = "quicknotes-notes";
+
+function saveNotes() {
+    localStorage.setItem(NOTES_KEY, JSON.stringify(notes));
+}
+
+function render(notesToDisplay = notes) {
     notesList.innerHTML = "";
 
-    notes.forEach((note) => {
+    if (notesToDisplay.length ===0 && searchInput.value.trim() !== "") {
+        const message = document.createElement("li");
+        message.textContent = "No notes found matching your search.";
+        notesList.appendChild(message);
+        return;
+    }
+
+    notesToDisplay.forEach((note) => {
         const li = document.createElement("li");
         li.classList.add("note", `category-${note.category}`);
         
@@ -55,6 +68,7 @@ function render() {
 
 function deleteNote(id) {
     notes = notes.filter((note) => note.id !== id);
+    saveNotes();
     render();
 }
 
@@ -82,9 +96,24 @@ form.addEventListener("submit", (event) => {
     };
 
     notes.push(note);
+    saveNotes();
     render();
+
     noteInput.value = "";
     errorMessage.textContent = "";
 });
+
+searchInput.addEventListener("input", () => {
+    const searchTerm = searchInput.value.trim().toLowerCase();
+    const filteredNotes = notes.filter((note) => 
+        note.text.toLowerCase().includes(searchTerm)
+    );
+    render(filteredNotes);
+});
+
+const savedNotes = localStorage.getItem(NOTES_KEY);
+if (savedNotes) {
+    notes = JSON.parse(savedNotes);
+}
 
 render();
