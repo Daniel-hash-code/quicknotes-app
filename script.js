@@ -7,55 +7,74 @@ const noteCount = document.querySelector("#note-count");
 const errorMessage = document.querySelector("#error-message");
 const clearAllButton = document.querySelector("#clear-all-notes-button");
 
-let notes = [];
-
 const NOTES_KEY = "quicknotes-notes";
+const MAX_LENGTH = 200;
+
+function loadNotes() {
+    const savedNotes = localStorage.getItem(NOTES_KEY);
+    if (!savedNotes) {
+        return [];
+    }
+    try {      
+        return JSON.parse(savedNotes);
+    } catch (error) {
+        console.error("Saved notes could not be loaded. Starting fresh...", error);
+        return [];
+    }
+}
+
+let notes = loadNotes();
 
 function saveNotes() {
     localStorage.setItem(NOTES_KEY, JSON.stringify(notes));
 }
 
-function render(notesToDisplay = notes) {
+function createNoteElement(note) {
+    const li = document.createElement("li");
+    li.classList.add("note", `category-${note.category}`);
+        
+    const text = document.createElement("p");
+    text.classList.add("note-text");
+    text.textContent = note.text;    
+        
+    const category = document.createElement("span");
+    category.classList.add("category-label");
+    category.textContent = note.category;
+
+    const date = document.createElement("p");
+    date.classList.add("note-date");
+    date.textContent = note.createdAt;
+
+    const deleteButton = document.createElement("button");
+    deleteButton.textContent = "Delete";
+    deleteButton.classList.add("delete-button");
+
+    deleteButton.addEventListener("click", () => {
+        deleteNote(note.id);
+    });
+
+    li.appendChild(text);
+    li.appendChild(category);
+    li.appendChild(date);
+    li.appendChild(deleteButton);
+
+    return li;
+}
+
+function render() {
+    const searchTerm = searchInput.value.trim().toLowerCase();
+    const visibleNotes = notes.filter((note) => note.text.toLowerCase().includes(searchTerm));
+    
     notesList.innerHTML = "";
 
-    if (notesToDisplay.length ===0 && searchInput.value.trim() !== "") {
+    if (notes.length > 0 && visibleNotes.length === 0) {
         const message = document.createElement("li");
-        message.textContent = "No notes found matching your search.";
-        notesList.appendChild(message);
-        return;
+        message.textContent = "No notes match your search.";
+        notesList.appendChild(message);  
     }
 
-    notesToDisplay.forEach((note) => {
-        const li = document.createElement("li");
-        li.classList.add("note", `category-${note.category}`);
-        
-        const text = document.createElement("p");
-        text.classList.add("note-text");
-        text.textContent = note.text;
-        
-        const category = document.createElement("span");
-        category.classList.add("category-label");
-        category.textContent = note.category;
-
-        const date = document.createElement("p");
-        date.classList.add("note-date");
-        date.textContent = note.createdAt;
-
-        const deleteButton = document.createElement("button");
-        deleteButton.textContent = "Delete";
-        deleteButton.classList.add("delete-button");
-
-        deleteButton.addEventListener("click", () => {
-            deleteNote(note.id);
-        });
-
-        li.appendChild(text);
-        li.appendChild(category);
-        li.appendChild(date);
-        li.appendChild(deleteButton);
-
-        notesList.appendChild(li);
-        
+    visibleNotes.forEach((note) => {
+        notesList.appendChild(createNoteElement(note));
     });
 
     if (notes.length === 0) {
@@ -84,8 +103,8 @@ form.addEventListener("submit", (event) => {
         return;
     }
 
-    if (text.length > 200) {
-        errorMessage.textContent = "Notes cannot be longer than 200 characters.";
+    if (text.length > MAX_LENGTH) {
+        errorMessage.textContent = `Notes must be ${MAX_LENGTH} characters or fewer.`;
         return;
     }
 
@@ -104,25 +123,14 @@ form.addEventListener("submit", (event) => {
     errorMessage.textContent = "";
 });
 
-searchInput.addEventListener("input", () => {
-    const searchTerm = searchInput.value.trim().toLowerCase();
-    const filteredNotes = notes.filter((note) => 
-        note.text.toLowerCase().includes(searchTerm)
-    );
-    render(filteredNotes);
-});
+searchInput.addEventListener("input", render);
 
 clearAllButton.addEventListener("click", () => {
-    if(confirm("Delete all notes?")) {
+    if (confirm("Delete all notes?")) {
         notes = [];
         saveNotes();
         render();
     }    
 });
-
-const savedNotes = localStorage.getItem(NOTES_KEY);
-if (savedNotes) {
-    notes = JSON.parse(savedNotes);
-}
 
 render();
