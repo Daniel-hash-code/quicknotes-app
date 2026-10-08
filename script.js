@@ -5,6 +5,7 @@ const notesList = document.querySelector("#notes-list");
 const searchInput = document.querySelector("#search-input");
 const noteCount = document.querySelector("#note-count");
 const errorMessage = document.querySelector("#error-message");
+const clearAllButton = document.querySelector("#clear-all-notes-button");
 
 let notes = [];
 
@@ -109,6 +110,14 @@ searchInput.addEventListener("input", () => {
         note.text.toLowerCase().includes(searchTerm)
     );
     render(filteredNotes);
+});
+
+clearAllButton.addEventListener("click", () => {
+    if(confirm("Delete all notes?")) {
+        notes = [];
+        saveNotes();
+        render();
+    }    
 });
 
 const savedNotes = localStorage.getItem(NOTES_KEY);
