@@ -1,0 +1,179 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+:root {
+    --background-color: #f4f6f8;
+    --text-color: #222;
+    --surface-color: #ffffff;
+    --border-color: #ccc;
+    --primary-color: #8e0000;
+    --button-color: #0ba184;
+    --button-hover: #088a70;
+}
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.5;
+}
+
+main {
+    padding: 0 16px;
+    max-width: 700px;
+    margin: 24px auto;
+}
+
+header {
+    background-color: var(--primary-color);
+    color: white;
+    text-align: center;
+    padding: 24px 16px;
+}
+
+header h1 {
+    margin: 0;
+}
+
+header p {
+    margin-bottom: 0;
+}
+
+section {
+    background-color: var(--surface-color);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+section h2 {
+    margin-top: 0;
+}
+
+#note-form {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+#note-form input,
+#note-form select {
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 1rem;
+}
+
+#note-input {
+    flex: 1;
+    min-width: 200px;
+}
+
+#note-category {
+    min-width: 130px;
+}
+
+#search-input {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 1rem;
+}
+
+button {
+    background-color: var(--button-color);
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: var(--button-hover);
+}
+
+#error-message {
+    color: red;
+    font-weight: bold;
+    min-height: 24px;
+}
+
+#notes-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.note {
+    padding: 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    margin-bottom: 12px;
+    background-color: var(--surface-color);
+}
+
+.category-personal {
+    border-left: 5px solid teal;
+}
+
+.category-work {
+    border-left: 5px solid darkred;
+}
+
+.category-study {
+    border-left: 5px solid blue;
+}
+
+.category-label {
+    display: inline-block;
+    font-size: 0.85rem;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.note-text {
+    margin: 0 0 8px;
+}
+
+.note-date {
+    font-size: 0.85rem;
+    color: #666;
+    margin: 8px 0;
+}
+
+footer {
+    text-align: center;
+    color: #777;
+    padding: 16px;
+}
+
+@media (max-width: 600px) {
+    #note-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    #note-form input,
+    #note-form select,
+    #note-form button {
+        width: 100%;
+    }
+
+    header {
+        padding: 16px 10px;
+    }
+
+    header h1 {
+        font-size: 1.5rem;
+    }
+}
