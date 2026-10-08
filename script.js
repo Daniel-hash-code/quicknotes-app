@@ -29,6 +29,10 @@ function saveNotes() {
     localStorage.setItem(NOTES_KEY, JSON.stringify(notes));
 }
 
+function capitalize(word) {
+    return word.charAt(0).toUpperCase() + word.slice(1);
+}
+
 function createNoteElement(note) {
     const li = document.createElement("li");
     li.classList.add("note", `category-${note.category}`);
@@ -39,7 +43,7 @@ function createNoteElement(note) {
         
     const category = document.createElement("span");
     category.classList.add("category-label");
-    category.textContent = note.category;
+    category.textContent = capitalize(note.category);
 
     const date = document.createElement("p");
     date.classList.add("note-date");
@@ -84,6 +88,8 @@ function render() {
     } else {
         noteCount.textContent = `You have ${notes.length} notes.`;
     }
+
+    clearAllButton.hidden = notes.length === 0;
 }
 
 function deleteNote(id) {
